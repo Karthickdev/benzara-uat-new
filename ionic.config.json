@@ -1,0 +1,7 @@
+{
+  "name": "opal",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}

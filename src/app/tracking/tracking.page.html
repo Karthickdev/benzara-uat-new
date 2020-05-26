@@ -1,0 +1,151 @@
+<ion-header class="ion-no-padding class-headerimg">
+<h4 class="page-title">TRACKING NUMBER</h4>
+  <ion-toolbar class="tool2">
+    <ion-grid class="ion-no-padding">
+      <ion-row>
+        <ion-col size="4" class="ion-text-left padd-left-0">
+          <button ion-button icon-only class="back-arrow" (click)="backToHome()">
+            <ion-icon style="font-size:35px;" name="arrow-back"></ion-icon>
+          </button>
+          <ion-buttons class="back-marg">
+            <ion-button style="font-size: 15px;color: #ffffff" (click)="backToHome()">BACK</ion-button>
+          </ion-buttons>
+        </ion-col>
+        <ion-col size="4" class="ion-text-center">
+          <ion-button fill='clear' class="save-btnCenter" type="submit" (click)="trackingsubmit()"
+            [disabled]="trackingordr.invalid || autoSave || !enableSave">SAVE
+          </ion-button>
+          <ion-button fill='clear' class="save-center" type="submit" (click)="trackingsubmit()"
+            [disabled]="trackingordr.invalid || autoSave || !enableSave">SAVE
+          </ion-button>
+        </ion-col>
+        <ion-col size="4" class="ion-text-right" (click)="formreset()">
+          <button ion-button icon-only class="clear-icon" (click)="formreset()">
+            <ion-icon style="font-size:35px;" name="refresh"></ion-icon>
+          </button>
+          <ion-buttons class="clear-marg">
+            <ion-button style="font-size: 15px;color: #ffffff">CLEAR</ion-button>
+          </ion-buttons>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-no-padding">
+  <form [formGroup]="trackingordr" (keyup.enter)="handleScanner($event)">
+    <ion-row class="row-padd">
+      <ion-col size="8">
+          <ion-label position="floating" class="lab-font lab-color" style="color: rgb(28, 31, 31);font-size: large;">TRACKING#</ion-label>
+          <ion-input #tracking class="ion-text-uppercase lab-font" clearInput type="text" formControlName="tracking"
+            ></ion-input>
+        <div class="validation-errors">
+          <div *ngFor="let validation of validation_messages['tracking']">
+            <div class="error-message"
+              *ngIf="trackingordr.get('tracking').hasError(validation['type']) && trackingordr.get('tracking').touched">
+              {{ validation.message }}
+            </div>
+          </div>
+        </div>
+        <div class="error-message" *ngIf="errOrder">Invalid Tracking number.</div>
+      </ion-col>
+      <ion-col size="4" style="display: flex!important; align-content: center!important; align-items: center!important;">
+      <!-- <button ion-button icon-only  (click)="scanOrder()" style="margin-left:25px;">
+            <ion-icon style="font-size:35px;" slot="end" name="search"></ion-icon>
+          </button> -->
+          <ion-buttons>
+            <ion-button fill="clear" (click)="scanOrder()" type="button" item-right
+              style="background:white; margin-left:25px;">
+              <ion-icon name="search" style="width: 35px; height: 35px; color:darkgray"> </ion-icon>
+            </ion-button>
+          </ion-buttons>
+      </ion-col>
+    </ion-row>
+    <!-- <ion-row class="row-padd">
+      <ion-col size="12">
+        <ion-item>
+          <ion-label style="color: rgb(28, 31, 31);font-size: large;" position="floating" class="lab-font lab-color">Item No</ion-label>
+
+          <ion-input type="text" #itemNo (keyup.enter)="handleitemScanner($event)" formControlName="itemvalues"
+            clearInput class="ion-text-uppercase lab-font">
+          </ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row> -->
+    <!-- <ion-row class="row-padd">
+      <ion-col size="12">
+        <ion-item>
+          <ion-input type="text" class="lab-font" style="width: 50%;" (keyup.enter)="handleitemScanner($event)"
+            clearInput formControlName="itemvalues" placeholder="Scan item number">
+          </ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row> -->
+    <ion-row *ngIf="scanItemList != undefined && scanItemList.length > 0">
+      <ion-col size="12">
+        <ion-label position="floating" style="color: rgb(28, 31, 31);font-size: large;text-align: left;margin-left: 3%;" class="lab-font lab-color">ITEM</ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngFor="let item of scanItemList;let i = index">
+      <ion-col size="12">
+        <ion-label position="floating" style="color: rgb(28, 31, 31);font-size: large;margin-left: 3%;" class="lab-font lab-color">{{item['itemName']}} ({{item['itemQuantity']}})</ion-label>
+      </ion-col>
+      <!-- <ion-col size="3" class="ion-text-center">
+        <ion-label style="color: rgb(28, 31, 31);font-size: large;" class="lab-font lab-color">{{item['itemQuantity']}}</ion-label>
+      </ion-col> -->
+      <!-- [style.color]="((1/item.itemQuantity)* item.isscanneditemslist) == 0 ? 'gray' : ((1/item.itemQuantity)* item.isscanneditemslist) < item.itemQuantity ? 'orange' : ((1/item.itemQuantity)* item.isscanneditemslist) == item.itemQuantity ? 'green' : ''" -->
+      <!-- <ion-col size="2" class="ion-text-center" (click)="checkToComplete(item)">
+        <ion-icon name="checkmark-circle"
+          [style.color]="item.isscanneditemslist == 0 ? 'gray' : item.isscanneditemslist < item.itemQuantity ? 'orange' : item.isscanneditemslist >= item.itemQuantity ? 'green' : ''"
+          class="imgscan"></ion-icon>
+      </ion-col> -->
+      <!-- <ion-col size="2">
+        <ion-progress-bar color="primary" value="{{(1/item.itemQuantity)* item.isscanneditemslist}}" width="50%"
+          id="bar">
+        </ion-progress-bar>
+      </ion-col> -->
+     
+    </ion-row>
+    <br>
+    <ion-row class="row-padd">
+      <ion-col size="12">
+          <ion-label style="color: rgb(28, 31, 31);font-size: large;" position="floating" class="lab-font lab-color">Order No &nbsp;{{this.orderno}} {{this.customername}}
+          </ion-label>
+      </ion-col>
+    </ion-row>
+    <br>
+    <ion-row class="row-padd">
+      <ion-col size="12">
+          <ion-label style="color: rgb(28, 31, 31);font-size: large;" position="floating" class="lab-font lab-color">ShipDate &nbsp;{{this.shipdate}}</ion-label>
+      </ion-col>
+    </ion-row>
+  </form>
+  <ion-toolbar class="tool1">
+    <ion-grid style="padding: 2% 3%">
+      <ion-row>
+        <ion-col size="5">
+          <ion-label style="color: rgb(28, 31, 31);font-size: large;" class="lab-font">Auto Save</ion-label>
+        </ion-col>
+        <ion-col size="2" class="ion-text-center">
+          <label class="switch"><input type="checkbox" (change)="isChecked($event)">
+            <div class="slider rnd"><span class="on">ON</span><span class="off">OFF</span></div>
+          </label>
+        </ion-col>
+        <ion-col size="5"></ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+  <ion-row class="marginTL10">
+    <ion-col size="12">
+      <ion-label style="color: rgb(28, 31, 31);font-size: large;" position="stacked" class="event-font marginTL10">Event Log</ion-label>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col size="12">
+      <ion-textarea rows="3" [(ngModel)]="eventLog" [readonly]='true' style="margin-left: 3%;" class="event-font-italic"></ion-textarea>
+    </ion-col>
+  </ion-row>
+</ion-content>
+<ion-footer no-border *ngIf="isKeyboardHide">
+  
+  <p style="font-size: 14px;text-align: center;color: gray;">Version: UAT (0.0.1) 26-05-2020</p>
+</ion-footer>

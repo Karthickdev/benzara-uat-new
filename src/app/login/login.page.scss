@@ -1,0 +1,67 @@
+
+// ion-content {
+//     --background: url("../../assets/images/opal-white-bg.jpg")!important;
+//     background-size: 100% 100%;
+//     background-position: center center;
+//     background-repeat: no-repeat;
+//   }
+
+ion-grid{
+    margin-top: 25%;
+    ion-item{
+        margin-left: 15px;
+        margin-right: 15px;
+        --background: rgb(250, 252, 252);
+    }
+}
+
+.class-headerimg{
+       // background-image: url("../../assets/images/homebg.png")!important;
+        background-size: 100% 100%; 
+        background-position: center center;
+        background-repeat: no-repeat;
+       // height: 20% !important;
+       // width: 100%;
+        //background-size: cover;
+       // position: absolute;
+    }
+@media (width: 480px){
+    .class-headerimg{
+        display: none;
+    }
+}
+
+.scroll-content {
+    padding-bottom: 0 !important;
+}
+
+// ion-content {
+//    padding-bottom: 0 !important;
+// }
+
+.validation-errors{
+	font-size: 15px;
+	color: red;
+}
+
+// .class-headerimg{
+//     background-image: url("../../assets/images/homebg.png")!important;
+//     background-size: 100% 100%; 
+//     background-position: center center;
+//     background-repeat: no-repeat;
+//     height: 20% !important;
+// }
+
+// ion-footer{
+//     position: relative;
+//     margin-bottom: -40px; 
+//     padding-bottom: 40px;
+// }
+
+body.keyboard-open .has-footer{
+        bottom: 0;
+    }
+
+.logBtn{
+    --background: var(--ion-color-log-btn);
+}

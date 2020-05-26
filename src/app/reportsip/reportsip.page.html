@@ -1,0 +1,189 @@
+<ion-header class="ion-no-padding class-headerimg">
+  <h4 class="page-title">REPORTS</h4>
+  <ion-toolbar class="tool2">
+    <ion-grid class="ion-no-padding">
+      <ion-row>
+        <ion-col size="4" class="ion-text-left" class="padd-left-0">
+          <ion-buttons class="back-marg">
+            <ion-button style="font-size: 15px;color: #ffffff" (click)="backToHome()">BACK</ion-button>
+          </ion-buttons>
+        </ion-col>
+        <ion-col size="1"></ion-col>
+        <ion-col size="2" class="ion-text-center">
+          <ion-buttons style="float: right;">
+            <ion-button fill='clear' class="save-center"></ion-button>
+          </ion-buttons>
+        </ion-col>
+        <ion-col size="1"></ion-col>
+        <ion-col size="4" class="ion-text-right">
+          <ion-buttons class="clear-marg">
+            <ion-button style="font-size: 15px;color: #ffffff" (click)="formreset()">CLEAR</ion-button>
+          </ion-buttons>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-no-padding">
+  <form [formGroup]="reportpage">
+    <ion-row class="class-rowpadd">
+      <ion-col size-xs="12" size-sm="3" size-lg="3">
+        <ion-label style="color: rgb(28, 31, 31);font-size: large;">Status</ion-label>
+        <ion-select value='40' class="class-status" #status formControlName="status"
+          (ionChange)="onStatusChange(status.value)">
+          <ion-select-option value="0">All</ion-select-option>
+          <ion-select-option value="40">Ready To Ship</ion-select-option>
+          <ion-select-option value="50">Shipped</ion-select-option>
+        </ion-select>
+        <!-- <ion-select>
+            <ion-select-option *ngFor="let item of orderStatus" [selected]="item['selected']" value="item['enumValue']">
+              {{item['enumName']}}
+            </ion-select-option>
+          </ion-select> -->
+      </ion-col>
+      <ion-col size-xs="12" size-sm="3" size="3">
+        <ion-label style="color: rgb(28, 31, 31);font-size: large;" position="floating" class="lab-font1 lab-color ">Order#</ion-label>
+        <ion-input #reportorder style="border: 1px solid gray;height: 40px;top: 4%;"
+          class="ion-text-uppercase lab-font class-status" type="text" formControlName="reportorder"></ion-input>
+      </ion-col>
+      <ion-col size-xs="12" size-sm="3" size="3">
+        <ion-label style="color: rgb(28, 31, 31);font-size: large;" position="floating" class="lab-font1 lab-color class-status">Carrier</ion-label>
+        <ion-input #carrier style="border: 1px solid gray;height: 40px;top: 4%;"
+          class="ion-text-uppercase lab-font cls-carrier class-status" type="text" formControlName="carrier">
+        </ion-input>
+      </ion-col>
+
+      <ion-col size-xs="12" size-sm="3" size-lg="3">
+        <ion-label style="color: rgb(28, 31, 31);font-size: large;">Warehouse</ion-label>
+
+        <ion-select formControlName="warehouse">
+          <ion-select-option *ngFor="let item of warehouselist" [value]="item['id']">
+            {{item['warehouseCode']}}</ion-select-option>
+        </ion-select>
+      </ion-col>
+
+    </ion-row>
+    <ion-row class="class-rowpadd">
+      <ion-col size-xs="12" size-sm="3" size="3">
+        <ion-label style="color: rgb(28, 31, 31);font-size: large;" position="floating" class="lab-font1 lab-color class-status">
+          {{this.frmdate}}</ion-label>
+
+        <ion-datetime display-format="MMM DD, YYYY HH:mm" picker-format="MMM DD, YYYY HH:mm" [(ngModel)]="sdate"
+          class="class-border" formControlName="ordercreatedfrom" style="color: rgb(28, 31, 31);font-size: large;">
+        </ion-datetime>
+      </ion-col>
+      <ion-col size-xs="12" size-sm="3" size="3">
+        <ion-label style="color: rgb(28, 31, 31);font-size: large;" position="floating" class="lab-font1 lab-color class-status">{{this.todate}}</ion-label>
+        <ion-datetime display-format="MMM DD, YYYY HH:mm" picker-format="MMM DD, YYYY HH:mm" [(ngModel)]="edate"
+          class="class-border" formControlName="ordercreatedto" style="color: rgb(28, 31, 31);font-size: large;">
+        </ion-datetime>
+      </ion-col>
+      <ion-col size-xs="6" size-sm="3" size-lg="3" text-right>
+        <ion-button expand="block" class="report-btn" (click)="getreports()">
+          Search
+        </ion-button>
+      </ion-col>
+      <ion-col size-xs="6" size-sm="3" size-lg="3" text-right>
+        <ion-button expand="block" class="report-btn" (click)="reportssubmit()">
+          Export
+        </ion-button>
+      </ion-col>
+
+    </ion-row>
+    <!-- <div style="overflow-x:auto;"> -->
+    <div class="tablet">
+      <table *ngIf="reportresults != undefined && reportresults.length > 0">
+        <tbody>
+          <tr style="background: #e6e3e0;">
+            <th style="width: 30%;">
+              <ion-label class="lab-font lab-color class-headerrs" style="color: rgb(28, 31, 31);font-size: large;">Order#</ion-label>
+            </th>
+            <th style="width: 30%;">
+              <ion-label class="lab-font lab-color class-headerrs" style="color: rgb(28, 31, 31);font-size: large;">BOL# / Track#</ion-label>
+            </th>
+            <th style="width: 25%;">
+              <ion-label class="lab-font lab-color class-headerrs" style="color: rgb(28, 31, 31);font-size: large;">Carrier</ion-label>
+            </th>
+            <th style="width: 15%;">
+              <ion-label class="lab-font lab-color class-headerrs" style="color: rgb(28, 31, 31);font-size: large;">Status</ion-label>
+            </th>
+          </tr>
+          <tr *ngFor="let item of reportresults;let i = index" class="rowtab">
+            <td>
+              <ion-label position="floating" class="lab-font lab-color" style="color: rgb(28, 31, 31);font-size: large;">
+                {{item.po}} ({{item.customerName}})<br>{{item.batchFilename}}
+              </ion-label>
+            </td>
+            <td>
+              <ion-label position="floating" class="lab-font lab-color" style="color: rgb(28, 31, 31);font-size: large;">
+                <span *ngIf='item.bol !== undefined'>{{item.bol}} / </span>
+                <span *ngIf='item.trackingNumber !== undefined'>{{item.trackingNumber}}</span><br>Ship Date:
+                {{item.shipDateString}}
+              </ion-label>
+            </td>
+            <td>
+              <ion-label position="floating" class="lab-font lab-color" style="color: rgb(28, 31, 31);font-size: large;">
+                <span *ngIf='item.carrierEnum == 50 '>{{item.ltlCarrierName}}</span>
+                <span *ngIf='item.carrierEnum != 50 '>{{item.carrier}}</span>
+              </ion-label>
+            </td>
+            <td>
+              <ion-label position="floating" class="lab-font lab-color" [ngClass]="{
+                'readtoshipCssStyle':item.orderStatus === 'ShippingLabelGenerated',
+                'ShipCssStyle':item.orderStatus === 'Shipped'}" style="color: rgb(28, 31, 31);font-size: large;">
+                {{item.orderStatus}}</ion-label>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mobile" *ngIf="reportresults != undefined && reportresults.length > 0">
+
+      <table *ngFor="let item of reportresults;let i = index" class="rowtab">
+        <tbody>
+          <tr>
+            <th style="color: rgb(28, 31, 31);font-size: large;">Order#</th>
+            <td>
+              <ion-label position="floating" class="lab-font lab-color" style="color: rgb(28, 31, 31);font-size: large;">
+                {{item.po}} ({{item.customerName}})<br>{{item.batchFilename}}
+              </ion-label>
+            </td>
+          </tr>
+          <tr>
+            <th style="color: rgb(28, 31, 31);font-size: large;">BOL/Trac</th>
+            <td>
+              <ion-label position="floating" class="lab-font lab-color" style="color: rgb(28, 31, 31);font-size: large;">
+                <span *ngIf='item.bol !== undefined'>{{item.bol}} / </span>
+                <span *ngIf='item.trackingNumber !== undefined'>{{item.trackingNumber}}</span><br>Ship Date:
+                {{item.shipDateString}}
+              </ion-label>
+            </td>
+          </tr>
+          <tr>
+            <th style="color: rgb(28, 31, 31);font-size: large;">Carrier</th>
+            <td>
+              <ion-label position="floating" class="lab-font lab-color" style="color: rgb(28, 31, 31);font-size: large;">
+                <span *ngIf='item.carrierEnum == 50 '>{{item.ltlCarrierName}}</span>
+                <span *ngIf='item.carrierEnum != 50 '>{{item.carrier}}</span>
+              </ion-label>
+            </td>
+          </tr>
+          <tr>
+            <th style="color: rgb(28, 31, 31);font-size: large;">Status</th>
+            <td>
+              <ion-label position="floating" class="lab-font lab-color" [ngClass]="{
+                  'readtoshipCssStyle':item.orderStatus === 'ShippingLabelGenerated',
+                  'ShipCssStyle':item.orderStatus === 'Shipped'}" style="color: rgb(28, 31, 31);font-size: large;">
+                {{item.orderStatus}}</ion-label>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </form>
+</ion-content>
+<!-- <ion-footer no-border *ngIf="isKeyboardHide">
+  <p style="font-size: 14px;text-align: center;color: gray;">Version: PROD (0.0.1) 1-05-2020</p>
+</ion-footer> -->
