@@ -24,7 +24,7 @@ export class ReportsipPage implements OnInit {
   startdate: string;
   enddate: string;
   starttime: string;
-  sdate: String = new Date().toLocaleDateString();
+  sdate: String = new Date().toDateString();
   edate: any;
   changevalue: any;
   frmdate: string;
@@ -82,7 +82,7 @@ export class ReportsipPage implements OnInit {
     this.getWarehouseList();
     console.log(screen.width);
     let date = new Date();
-    this.edate = new Date(date.setDate(date.getDate() + 1)).toLocaleDateString();
+    this.edate = new Date(date.setDate(date.getDate() + 1)).toDateString();
 
     this.keyboard.onKeyboardWillShow().subscribe(()=>{
       this.isKeyboardHide=false;
@@ -103,8 +103,8 @@ export class ReportsipPage implements OnInit {
     this.reportpage.reset();
     setTimeout(() => {
       this.reportresults = [];
-      this.sdate = date.toLocaleDateString();
-      this.edate = new Date(date.setDate(date.getDate() + 1)).toLocaleDateString();
+      this.sdate = date.toDateString();
+      this.edate = new Date(date.setDate(date.getDate() + 1)).toDateString();
       this.reportpage.patchValue({ status: '40' });
       this.reportpage.patchValue({ warehouse: '1000' });
     }, 300);
