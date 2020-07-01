@@ -7,7 +7,7 @@ import { HTTP } from '@ionic-native/http/ngx';
   providedIn: 'root'
 })
 export class AuthService {
-  // baseUrl: string = 'http://71.252.180.148/opal/uat/Benzara/scanAppApi/'; //UAT
+   //baseUrl: string = 'http://71.252.180.148/opal/uat/Benzara/scanAppApi/'; //UAT
    //baseUrl: string = 'http://71.252.180.148/opal/uat/vanityart/';
    baseUrl: string = 'https://www2.order-fulfillment.bz/benzara/scanAppApi/'; //PROD
   //baseUrl: string = 'https://www2.order-fulfillment.bz/GatherCraft/scanAppApi/'; //NEW PROD

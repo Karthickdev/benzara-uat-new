@@ -202,15 +202,15 @@ export class TrackingPage implements OnInit {
              }, 500);
           this.enableSave = false;
         }
-        //else {
-         // this.eventLog = 'Tracking # ' + trckaingvalue.toUpperCase() + ' ' + resp['message'] + ' \u2716' + '\n' + this.eventLog;
-          // this.Vanityartservice.PresentToast("Invalid Order/Tracking #", "danger");
-          //this.rayneService.PresentToast(resp['message'], 'danger');
-        //  this.trackingordr.controls['tracking'].reset();
-        //   setTimeout(() => {
-        //     this.tracking.setFocus();
-        //   }, 500);
-        // }
+        else {
+          this.eventLog = 'Tracking # ' + trckaingvalue.toUpperCase() + ' ' + resp['message'] + ' \u2716' + '\n' + this.eventLog;
+          this.gatherService.PresentToast(resp['message'], 'danger');
+          this.trackingordr.controls['tracking'].enable();
+          setTimeout(() => {
+            this.tracking.setFocus();
+          }, 500);
+          this.enableSave = false;
+        }
         this.gatherService.dismiss();
       })
     }
