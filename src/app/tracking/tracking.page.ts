@@ -184,6 +184,11 @@ export class TrackingPage implements OnInit {
           setTimeout(() => {
             this.itemNo.setFocus();
           }, 300);
+        }
+        if(resp['message'] == 'Order has not been scanned'){
+          this.eventLog = resp['message'] + '\u2716' + '\n' + this.eventLog
+          this.gatherService.PresentToast(resp['message'], 'danger');
+          this.enableSave = true;
         } 
         if (resp['status'] == 'Success'){
           if(this.autoSave){
@@ -201,8 +206,7 @@ export class TrackingPage implements OnInit {
                this.tracking.setFocus();
              }, 500);
           this.enableSave = false;
-        }
-        else {
+        } else {
           this.eventLog = 'Tracking # ' + trckaingvalue.toUpperCase() + ' ' + resp['message'] + ' \u2716' + '\n' + this.eventLog;
           this.gatherService.PresentToast(resp['message'], 'danger');
           this.trackingordr.controls['tracking'].enable();
