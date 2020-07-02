@@ -88,6 +88,9 @@ export class TrackingPage implements OnInit {
       // console.log('HIDEK');
     });
     this.enableSave = false;
+    this.platform.backButton.subscribeWithPriority(0, () => {
+      this.routeto.navigate(['/home']);
+   });
   }
 
   ionViewDidEnter(){
@@ -185,15 +188,12 @@ export class TrackingPage implements OnInit {
             this.itemNo.setFocus();
           }, 300);
         }
-        if(resp['message'] == 'Order has not been scanned'){
-          this.eventLog = resp['message'] + '\u2716' + '\n' + this.eventLog
-          this.gatherService.PresentToast(resp['message'], 'danger');
-          this.enableSave = true;
-        } 
-        if (resp['status'] == 'Success'){
+         
+        if (resp['status'] == 'Success' && resp['orderStatus'] == 'Shipped'){
           if(this.autoSave){
             this.trackingsubmit();
           }
+          this.enableSave = true;
         }
         if (resp['status'] == 'Scanned') {
           this.openConfirmationAlert(resp, trckaingvalue);
@@ -206,6 +206,10 @@ export class TrackingPage implements OnInit {
                this.tracking.setFocus();
              }, 500);
           this.enableSave = false;
+        } else if(resp['message'] == 'Order has not been scanned'){
+          this.eventLog = resp['message'] + '\u2716' + '\n' + this.eventLog
+          this.gatherService.PresentToast(resp['message'], 'danger');
+          this.enableSave = true;
         } else {
           this.eventLog = 'Tracking # ' + trckaingvalue.toUpperCase() + ' ' + resp['message'] + ' \u2716' + '\n' + this.eventLog;
           this.gatherService.PresentToast(resp['message'], 'danger');
@@ -214,9 +218,13 @@ export class TrackingPage implements OnInit {
             this.tracking.setFocus();
           }, 500);
           this.enableSave = false;
+          console.log('checkstatus');
         }
         this.gatherService.dismiss();
+      }, err=>{
+        this.gatherService.dismiss();
       })
+      this.gatherService.dismiss();
     }
   }
 
@@ -329,8 +337,10 @@ export class TrackingPage implements OnInit {
         this.formClear();
       }
       this.gatherService.dismiss();
+    }, err=> {
+      this.gatherService.dismiss();
     })
-
+    this.gatherService.dismiss();
   }
 
 

@@ -3,6 +3,7 @@ import { Validators, FormGroup, FormBuilder, FormControl } from '@angular/forms'
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
+import { Platform } from '@ionic/angular';
 // import { DatePicker } from '@ionic-native/date-picker';
 
 @Component({
@@ -40,7 +41,8 @@ export class ReportsipPage implements OnInit {
     private formbuilder: FormBuilder,
     private routeto: Router,
     private Vanityartservice: AuthService,
-    private keyboard: Keyboard
+    private keyboard: Keyboard,
+    public platform: Platform
     // private datePicker: DatePicker,
   ) {
     this.reportpage = this.formbuilder.group({
@@ -96,6 +98,9 @@ export class ReportsipPage implements OnInit {
       // console.log('HIDEK');
     });
     this.enableSave = false;
+    this.platform.backButton.subscribeWithPriority(0, () => {
+         this.routeto.navigate(['/home']);
+      });
   }
   formreset() {
     let date = new Date();

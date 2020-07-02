@@ -57,9 +57,9 @@ export class LoginPage implements OnInit {
     });
    
     this.platform.backButton.subscribeWithPriority(0, () => {
-      if(this.router.url === '/login'){
+     // if(this.router.url === '/login'){
         navigator['app'].exitApp();
-      }
+     // }
      });
     let msg = JSON.parse(localStorage.getItem(("Message")));
     if (msg) this.message = msg;

@@ -107,6 +107,9 @@ export class BolscanningPage implements OnInit {
       // console.log('HIDEK');
     });
     this.enableSave = false;
+    this.platform.backButton.subscribeWithPriority(0, () => {
+      this.routeto.navigate(['/home']);
+   });
   }
   ionViewDidEnter(){
     console.log(this.respData);
@@ -118,6 +121,7 @@ export class BolscanningPage implements OnInit {
     //   this.eventLog = 'Your screen resolution is'+' '+this.deviceWidth+' '+'X'+' '+this.deviceHeight
     // });
    // this.eventLog = 'Your screen resolution is'+' '+window.innerWidth+' '+'X'+' '+window.innerHeight
+
   }
 
   ionViewDidLeave() {
@@ -257,7 +261,10 @@ export class BolscanningPage implements OnInit {
        
         this.gatherService.dismiss();
         // }
+      }, err=>{
+        this.gatherService.dismiss();
       })
+      this.gatherService.dismiss();
     }
   }
 
@@ -386,7 +393,10 @@ export class BolscanningPage implements OnInit {
         
       }
       this.gatherService.dismiss();
+    }, err=>{
+      this.gatherService.dismiss();
     })
+    this.gatherService.dismiss();
   }
 
 
