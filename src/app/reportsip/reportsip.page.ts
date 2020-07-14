@@ -46,7 +46,7 @@ export class ReportsipPage implements OnInit {
     // private datePicker: DatePicker,
   ) {
     this.reportpage = this.formbuilder.group({
-      status: ['40', Validators.compose([Validators.required])],
+      status: ['50', Validators.compose([Validators.required])],
       reportorder: ['', Validators.compose([Validators.required])],
       carrier: ['', Validators.compose([Validators.required])],
       warehouse: ['', Validators.compose([Validators.required])],
@@ -55,7 +55,7 @@ export class ReportsipPage implements OnInit {
     });
 
     this.reportpageMobile = this.formbuilder.group({
-      status: ['40', Validators.compose([Validators.required])],
+      status: ['50', Validators.compose([Validators.required])],
       reportorder: ['', Validators.compose([Validators.required])],
       carrier: ['', Validators.compose([Validators.required])],
       warehouse: ['', Validators.compose([Validators.required])]
@@ -110,7 +110,7 @@ export class ReportsipPage implements OnInit {
       this.reportresults = [];
       this.sdate = date.toDateString();
       this.edate = new Date(date.setDate(date.getDate() + 1)).toDateString();
-      this.reportpage.patchValue({ status: '40' });
+      this.reportpage.patchValue({ status: '50' });
       this.reportpage.patchValue({ warehouse: '1000' });
     }, 300);
   }
@@ -212,8 +212,8 @@ export class ReportsipPage implements OnInit {
         }
       })
       this.orderStatus.push({ enumName: 'All', enumValue: '0', selected: false });
-      this.orderStatus.push({ enumName: 'Ready to Ship', enumValue: '40', selected: false });
-      this.orderStatus.push({ enumName: 'Shipped', enumValue: '50', selected: false });
+      this.orderStatus.push({ enumName: 'Ready to Ship', enumValue: '50', selected: false });
+      this.orderStatus.push({ enumName: 'Shipped', enumValue: '80', selected: false });
       console.log(this.orderStatus);
       this.Vanityartservice.dismiss();
     })
@@ -223,10 +223,10 @@ export class ReportsipPage implements OnInit {
   onStatusChange(svalue) {
     this.changevalue = svalue;
     console.log("Values", this.changevalue)
-    if (svalue == 50) {
+    if (svalue == 80) {
       this.frmdate = "OrderShipped From";
       this.todate = "OrderShipped To";
-    } else if (svalue == 40) {
+    } else if (svalue == 50) {
       this.frmdate = "OrderReceived From";
       this.todate = "OrderReceived To";
     } else if (svalue == 0) {
