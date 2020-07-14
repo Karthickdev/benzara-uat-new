@@ -352,8 +352,8 @@ export class BolscanningPage implements OnInit {
       // "shippingMethod": this.respData.shippingMethod,
       // "pro": this.bolscanning.value.pro != undefined ? this.bolscanning.value.pro : '',
       //"pro": this.bolscanning.value.pro,
-      "pro": this.pro
-      // "Modified": this.userId,
+      "pro": this.pro,
+      "Modified": this.userId,
       // "scanItemList": this.scanItemList
     }
     console.log(jsonobj);
@@ -476,7 +476,7 @@ export class BolscanningPage implements OnInit {
             console.log('Confirm Okay');
             let jsonobj = {
               "order": resp['order'],
-            //  "Modified": this.userId,
+              "Modified": this.userId,
               "bol": bol.toUpperCase(),
               //"pro": resp['pro']
             }

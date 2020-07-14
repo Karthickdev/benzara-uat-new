@@ -66,7 +66,7 @@ export class ReportsipPage implements OnInit {
     // this.frmdate = "OrderReceived From";
     // this.todate = "OrderReceived To";
 
-    // this.userId = JSON.parse(localStorage.getItem(("Id")));
+     //this.userId = JSON.parse(localStorage.getItem(("Id")));
     // // this.getOrderStatusList();
     // this.getWarehouseList();
     // console.log(screen.width);
