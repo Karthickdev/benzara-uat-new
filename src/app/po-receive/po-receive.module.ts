@@ -4,18 +4,18 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { BolscanPageRoutingModule } from './bolscan-routing.module';
+import { PoReceivePageRoutingModule } from './po-receive-routing.module';
 
-import { BolscanPage } from './bolscan.page';
+import { PoReceivePage } from './po-receive.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
-    ReactiveFormsModule,
     IonicModule,
-    BolscanPageRoutingModule
+    ReactiveFormsModule,
+    PoReceivePageRoutingModule
   ],
-  declarations: [BolscanPage]
+  declarations: [PoReceivePage]
 })
-export class BolscanPageModule {}
+export class PoReceivePageModule {}

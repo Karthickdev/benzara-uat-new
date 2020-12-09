@@ -49,10 +49,11 @@ export class BolscanningPage implements OnInit {
   enableSave: any;
   isKeyboardHide = true;
   version:any;
+  allowSearch=true;
   constructor(
     private formBuilder: FormBuilder,
     private routeto: Router,
-    private gatherService: AuthService,
+    private benzaraService: AuthService,
     public alert: AlertController,
     private platform: Platform,
     private keyboard: Keyboard
@@ -112,16 +113,6 @@ export class BolscanningPage implements OnInit {
    });
   }
   ionViewDidEnter(){
-    console.log(this.respData);
-    // this.platform.ready().then((readySource) => {
-    //   console.log('Width: ' + this.platform.width());
-    //   console.log('Height: ' + this.platform.height());
-    //   this.deviceWidth = this.platform.width();
-    //   this.deviceHeight = this.platform.height();
-    //   this.eventLog = 'Your screen resolution is'+' '+this.deviceWidth+' '+'X'+' '+this.deviceHeight
-    // });
-   // this.eventLog = 'Your screen resolution is'+' '+window.innerWidth+' '+'X'+' '+window.innerHeight
-
   }
 
   ionViewDidLeave() {
@@ -129,14 +120,11 @@ export class BolscanningPage implements OnInit {
   }
 
   scanOrder() {
-    console.log('In scan order');
     let value = this.bolscanning.controls['bolnumber'].value;
     this.orderSearch(value);
   }
   //order search via enter key
   handleScanner(evt) {
-    // this.keyboard.show();
-    // this.input.setFocus();
     setTimeout(() => {
       let value = evt.target.value;
       console.log(value);
@@ -163,7 +151,7 @@ export class BolscanningPage implements OnInit {
   }
 
   orderSearch(evt) {
-    var orderScan = this.gatherService.baseUrl + this.gatherService.getscanitems;
+    var orderScan = this.benzaraService.baseUrl + this.benzaraService.getscanitems;
     let bolvalue = evt;
     if (bolvalue != "" && bolvalue != null) {
       var dataParam = {
@@ -171,8 +159,8 @@ export class BolscanningPage implements OnInit {
         "BOL": bolvalue.toUpperCase(),
 
       }
-      this.gatherService.present();
-      this.gatherService.ajaxCallService(orderScan, "post", dataParam).then(resp => {
+      this.benzaraService.present();
+      this.benzaraService.ajaxCallService(orderScan, "post", dataParam).then(resp => {
         this.respData = resp;
         console.log(this.respData);
         // if(resp['status'] == 'Ready to ship'){
@@ -200,7 +188,7 @@ export class BolscanningPage implements OnInit {
           this.enableSave = true;
           // if (this.scanItemList[0]['isScanned']) {
           if(resp['isScanned']){
-            this.gatherService.PresentToast(resp['message'], "danger");
+            this.benzaraService.PresentToast(resp['message'], "danger");
             console.log('testmssage');
              setTimeout(() => {
              // this.keyboard.show();
@@ -220,24 +208,28 @@ export class BolscanningPage implements OnInit {
         } 
         if(resp['status'] == 'Success'){
           if(this.autoSave){
-            this.bolscansubmit();
+            if(this.allowSearch == true){
+              this.allowSearch = false
+              this.bolscansubmit();
+            }
+            
           }
         }
         
         if (resp['status'] == 'Shipped') {
           this.openConfirmationAlert(resp, bolvalue);
           this.eventLog = 'Order # ' + bolvalue + ' ' + resp['message'] + '\u2716' + '\n' + this.eventLog;
-          this.gatherService.PresentToast('BOL# ' + bolvalue + ' ' + resp['message'], "danger");
+          this.benzaraService.PresentToast('BOL# ' + bolvalue + ' ' + resp['message'], "danger");
           //this.bolscanning.controls['bolnumber'].reset();
         } else if (resp['status'] == 'Delivered') {
           this.eventLog = 'Order # ' + bolvalue + ' is Delivered . \u2716' + '\n' + this.eventLog;
-          this.gatherService.PresentToast('BOL # ' + bolvalue + ' is Delivered', "danger");
+          this.benzaraService.PresentToast('BOL # ' + bolvalue + ' is Delivered', "danger");
 
          // this.bolscanning.controls['bolnumber'].reset();
         }
         else if (resp['message'] == 'Order has been cancelled') {
           this.eventLog = 'Order # ' + bolvalue + ' is Cancelled . \u2716' + '\n' + this.eventLog;
-          this.gatherService.PresentToast('BOL # ' + bolvalue + ' is Cancelled', "danger");
+          this.benzaraService.PresentToast('BOL # ' + bolvalue + ' is Cancelled', "danger");
          // this.bolscanning.controls['bolnumber'].reset();
           setTimeout(() => {
             this.bolnumber.setFocus();
@@ -245,7 +237,7 @@ export class BolscanningPage implements OnInit {
         }
         else if(resp['message'] == 'BOL number not found'){
           this.eventLog = resp['message'] + '\u2716' + '\n' + this.eventLog
-          this.gatherService.PresentToast(resp['message'], 'danger');
+          this.benzaraService.PresentToast(resp['message'], 'danger');
           setTimeout(() => {
                this.bolnumber.setFocus();
              }, 500);
@@ -259,12 +251,14 @@ export class BolscanningPage implements OnInit {
         //    this.bolnumber.setFocus();
         //  }, 500);
        
-        this.gatherService.dismiss();
+        this.benzaraService.dismiss();
         // }
       }, err=>{
-        this.gatherService.dismiss();
+        this.benzaraService.dismiss();
+      }).catch(err=>{
+        this.benzaraService.dismiss();
       })
-      this.gatherService.dismiss();
+      
     }
   }
 
@@ -281,7 +275,7 @@ export class BolscanningPage implements OnInit {
           this.scanItemList[idx]['isScanned'] = true;
           this.scanItemList[idx]['isByPass'] = false;
         } else if (this.scanItemList[idx]['isscanneditemslist'] > this.scanItemList[idx]['itemQuantity']) {
-          this.gatherService.PresentToast(this.message[6], 'danger');
+          this.benzaraService.PresentToast(this.message[6], 'danger');
           this.scanItemList[idx]['isscanneditemslist'] = this.scanItemList[idx]['isscanneditemslist'] - 1;
           this.bolscanning.controls['itemvalues'].reset();
         }
@@ -291,7 +285,7 @@ export class BolscanningPage implements OnInit {
     }
 
     if (!temp) {
-      this.gatherService.PresentToast(this.message[4], 'danger');
+      this.benzaraService.PresentToast(this.message[4], 'danger');
       this.eventLog = 'Items# ' + this.scaneditems + ' ' + this.message[4] + ' \u2714' + '\n' + this.eventLog;
       this.bolscanning.controls['itemvalues'].reset();
     }
@@ -338,29 +332,20 @@ export class BolscanningPage implements OnInit {
 
   //Method to save data through save button
   bolscansubmit() {
-    this.gatherService.present();
+    this.benzaraService.present();
     this.itemslist = this.scanItemList;
-    var saveOrder = this.gatherService.baseUrl + this.gatherService.saveitems;
+    var saveOrder = this.benzaraService.baseUrl + this.benzaraService.saveitems;
     let jsonobj: any = {
       "bol": this.respData.bol,
       "order": this.respData.order,
-      // "customerName": this.respData.customerName,
-      // "orderDateString": this.respData.orderDateString,
-      // "shipDateString": this.respData.shipDateString,
-      // "carrier": this.respData.carrier,
-      // "orderStatus": this.respData.orderStatus,
-      // "shippingMethod": this.respData.shippingMethod,
-      // "pro": this.bolscanning.value.pro != undefined ? this.bolscanning.value.pro : '',
-      //"pro": this.bolscanning.value.pro,
       "pro": this.pro,
       "Modified": this.userId,
-      // "scanItemList": this.scanItemList
     }
     console.log(jsonobj);
-    this.gatherService.ajaxCallService(saveOrder, "post", jsonobj).then(result => {
-      console.log(result);
+    this.benzaraService.ajaxCallService(saveOrder, "post", jsonobj).then(result => {
+      this.allowSearch = true
       if (result['message'] == 'Success') {
-        this.gatherService.PresentToast("Items scan completed & " + result['message'], "success");
+        this.benzaraService.PresentToast("Items scan completed & " + result['message'], "success");
         this.eventLog = 'Items# ' + this.respData.bol + ' scan and save completed. \u2714' + '\n' + this.eventLog;
         console.log('correct');
         this.formClear();
@@ -381,7 +366,7 @@ export class BolscanningPage implements OnInit {
       }
       else {
         console.log('wrong');
-        this.gatherService.PresentToast(result['message'], "danger");
+        this.benzaraService.PresentToast(result['message'], "danger");
         if (this.pro == '' || this.pro == undefined) {
           this.enableSave = true;
           setTimeout(() => {
@@ -392,11 +377,15 @@ export class BolscanningPage implements OnInit {
         }
         
       }
-      this.gatherService.dismiss();
+      this.benzaraService.dismiss();
     }, err=>{
-      this.gatherService.dismiss();
+      this.allowSearch = true
+      this.benzaraService.dismiss();
+    }).catch(err=>{
+      this.allowSearch = true
+      this.benzaraService.dismiss();
     })
-    this.gatherService.dismiss();
+    
   }
 
 
@@ -418,7 +407,7 @@ export class BolscanningPage implements OnInit {
     if (bolnumber == "" || bolnumber == null) {
       this.routeto.navigate(['/home']);
     } else {
-      this.gatherService.PresentToast("There is unsaved data in the form, either save or clear the form.", "danger");
+      this.benzaraService.PresentToast("There is unsaved data in the form, either save or clear the form.", "danger");
     }
   }
 
@@ -481,11 +470,11 @@ export class BolscanningPage implements OnInit {
               //"pro": resp['pro']
             }
             console.log(jsonobj);
-            let url = this.gatherService.baseUrl + this.gatherService.readyToShipped;
-            this.gatherService.ajaxCallService(url, "post", jsonobj).then(result => {
+            let url = this.benzaraService.baseUrl + this.benzaraService.readyToShipped;
+            this.benzaraService.ajaxCallService(url, "post", jsonobj).then(result => {
               console.log(result);
               if (result['status'] == 'Success') {
-                this.gatherService.PresentToast(result['message'], 'success');
+                this.benzaraService.PresentToast(result['message'], 'success');
                 this.enterEvt = false;
                 this.enterEvt = false;
               //  this.scanItemList = result['scanItemList'];
@@ -507,7 +496,7 @@ export class BolscanningPage implements OnInit {
                 //   this.bolscansubmit();
                 // }
               } else {
-                this.gatherService.PresentToast(result['message'], 'danger');
+                this.benzaraService.PresentToast(result['message'], 'danger');
                 this.eventLog = result['message'] + '\n' + this.eventLog;
                 this.formClear();
               }

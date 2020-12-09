@@ -9,10 +9,6 @@ const routes: Routes = [
     loadChildren: () => import('./login/login.module').then( m => m.LoginPageModule)
   },
   {
-    path: 'bolscan',
-    loadChildren: () => import('./bolscan/bolscan.module').then( m => m.BolscanPageModule)
-  },
-  {
     path: 'tracking',
     loadChildren: () => import('./tracking/tracking.module').then( m => m.TrackingPageModule)
   },
@@ -23,6 +19,10 @@ const routes: Routes = [
   {
     path: 'bolscanning',
     loadChildren: () => import('./bolscanning/bolscanning.module').then( m => m.BolscanningPageModule)
+  },
+  {
+    path: 'po-receive',
+    loadChildren: () => import('./po-receive/po-receive.module').then( m => m.PoReceivePageModule)
   },
 ];
 

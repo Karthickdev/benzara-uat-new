@@ -12,7 +12,7 @@ export class HomePage implements OnInit {
   version:any;
   constructor(
     private routeto: Router,
-    private Vanityartservice: AuthService
+    private benzaraService: AuthService
   ) {
     this.version = localStorage.getItem('version');
   }
@@ -32,5 +32,8 @@ export class HomePage implements OnInit {
   }
   gotoreports() {
     this.routeto.navigate(["/reportsip"]);
+  }
+  gotoporeceive(){
+    this.routeto.navigate(['/po-receive']);
   }
 }

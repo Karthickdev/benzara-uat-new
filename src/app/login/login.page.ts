@@ -27,7 +27,7 @@ export class LoginPage implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private routeTo: Router,
-    private gatherService: AuthService,
+    private benzaraService: AuthService,
     public platform: Platform,
     private keyboard: Keyboard
   ) {
@@ -46,20 +46,14 @@ export class LoginPage implements OnInit {
   ionViewWillEnter() {
     this.keyboard.onKeyboardWillShow().subscribe(()=>{
       this.isKeyboardHide=false;
-      //Keyboard.disableScroll(true);
-      // console.log('SHOWK');
     });
 
     this.keyboard.onKeyboardWillHide().subscribe(()=>{
       this.isKeyboardHide=true;
-      //this.keyboard.disableScroll(false);
-      // console.log('HIDEK');
     });
    
     this.platform.backButton.subscribeWithPriority(0, () => {
-     // if(this.router.url === '/login'){
         navigator['app'].exitApp();
-     // }
      });
     let msg = JSON.parse(localStorage.getItem(("Message")));
     if (msg) this.message = msg;
@@ -73,7 +67,7 @@ export class LoginPage implements OnInit {
 
 
   btnLogin() {
-    var loginUrl = this.gatherService.baseUrl + this.gatherService.userLogin;
+    var loginUrl = this.benzaraService.baseUrl + this.benzaraService.userLogin;
     console.log(loginUrl);
     if (this.userEmail == undefined || this.userEmail == "") {
       this.errUserName = true;
@@ -93,27 +87,23 @@ export class LoginPage implements OnInit {
     }
     console.log(dataParam);
     let userName = this.userEmail;
-    //if (this.gatherService.versionChecked) {
-      this.gatherService.present();
-      this.gatherService.ajaxCallService(loginUrl, "post", dataParam).then(resp => {
-        console.log(resp);
+    //if (this.benzaraService.versionChecked) {
+      this.benzaraService.present();
+      this.benzaraService.ajaxCallService(loginUrl, "post", dataParam).then(resp => {
         if (resp['status'] == "Success") {
           localStorage.setItem("Id", JSON.stringify(resp['userId']));
           localStorage.setItem("userName", userName);
           this.routeTo.navigate(["/home"]);
           this.errPassword = false;
         } else {
-          this.gatherService.PresentToast(resp['message'], 'danger');
+          this.benzaraService.PresentToast(resp['message'], 'danger');
         }
   
-        this.gatherService.dismiss();
+        this.benzaraService.dismiss();
       }).catch(err => {
-        this.gatherService.PresentToast('Unable to reach server, Please try again', 'danger');
-        this.gatherService.dismiss();
+        this.benzaraService.PresentToast('Unable to reach server, Please try again', 'danger');
+        this.benzaraService.dismiss();
       });
-    // } else {
-    //   this.gatherService.presentAlert();
-    // }
   }
 
   //check if model is empty

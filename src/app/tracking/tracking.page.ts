@@ -41,10 +41,11 @@ export class TrackingPage implements OnInit {
   isKeyboardHide = true;
   enableSave:any;
   version:any;
+  allowSearch=true;
   constructor(
     private formbuilder: FormBuilder,
     private routeto: Router,
-    private gatherService: AuthService,
+    private benzaraService: AuthService,
     private alert: AlertController,
     private platform: Platform,
     private keyboard: Keyboard
@@ -104,7 +105,6 @@ export class TrackingPage implements OnInit {
     //this.eventLog = 'Your screen resolution is'+' '+window.innerWidth+' '+'X'+' '+window.innerHeight
   }
   scanOrder() {
-    console.log('In scan order');
     let value = this.trackingordr.controls['tracking'].value;
     this.trackingProNumber = value;
     this.trackingSearch(value);
@@ -135,7 +135,7 @@ export class TrackingPage implements OnInit {
     if (tracking == "" || tracking == null) {
       this.routeto.navigate(['/home']);
     } else {
-      this.gatherService.PresentToast("There is unsaved data in the form, either save or clear the form.", "danger");
+      this.benzaraService.PresentToast("There is unsaved data in the form, either save or clear the form.", "danger");
     }
   }
 
@@ -151,14 +151,14 @@ export class TrackingPage implements OnInit {
 
   //Method for tracking items
   trackingSearch(evt) {
-    var trackingscan = this.gatherService.baseUrl + this.gatherService.trackingitems;
+    var trackingscan = this.benzaraService.baseUrl + this.benzaraService.trackingitems;
     let trckaingvalue = evt;
     if (trckaingvalue != "" && trckaingvalue != null) {
       var dataParam = {
         "TrackingNumber": trckaingvalue.toUpperCase()
       }
-      this.gatherService.present();
-      this.gatherService.ajaxCallService(trackingscan, "post", dataParam).then(resp => {
+      this.benzaraService.present();
+      this.benzaraService.ajaxCallService(trackingscan, "post", dataParam).then(resp => {
         this.respData = resp;
         console.log("res", this.respData);
         if (resp['scanItemList']['length'] != 0) {
@@ -176,7 +176,7 @@ export class TrackingPage implements OnInit {
           this.trackingordr.controls['tracking'].disable();
           this.enableSave = true;
           // if(resp['isScanned']){
-          //   this.gatherService.PresentToast(resp['message'], "danger");
+          //   this.benzaraService.PresentToast(resp['message'], "danger");
           //   console.log('testmssage');
           //    setTimeout(() => {
           //    // this.keyboard.show();
@@ -191,28 +191,31 @@ export class TrackingPage implements OnInit {
          
         if (resp['status'] == 'Success' && resp['orderStatus'] == 'Shipped'){
           if(this.autoSave){
-            this.trackingsubmit();
+            if(this.allowSearch == true){
+              this.allowSearch = false
+              this.trackingsubmit();
+            }
           }
           this.enableSave = true;
         }
         if (resp['status'] == 'Scanned') {
           this.openConfirmationAlert(resp, trckaingvalue);
           this.eventLog = 'Tracking # ' + trckaingvalue + ' already scanned. \u2716' + '\n' + this.eventLog;
-          this.gatherService.PresentToast('Order/Tracking # ' + trckaingvalue + ' already added/scanned', "danger");
+          this.benzaraService.PresentToast('Order/Tracking # ' + trckaingvalue + ' already added/scanned', "danger");
         } else if(resp['message'] == 'Tracking Number not found'){
           this.eventLog = resp['message'] + '\u2716' + '\n' + this.eventLog
-          this.gatherService.PresentToast(resp['message'], 'danger');
+          this.benzaraService.PresentToast(resp['message'], 'danger');
           setTimeout(() => {
                this.tracking.setFocus();
              }, 500);
           this.enableSave = false;
         } else if(resp['message'] == 'Order has not been scanned'){
           this.eventLog = resp['message'] + '\u2716' + '\n' + this.eventLog
-          this.gatherService.PresentToast(resp['message'], 'danger');
+          this.benzaraService.PresentToast(resp['message'], 'danger');
           this.enableSave = true;
         } else {
           this.eventLog = 'Tracking # ' + trckaingvalue.toUpperCase() + ' ' + resp['message'] + ' \u2716' + '\n' + this.eventLog;
-          this.gatherService.PresentToast(resp['message'], 'danger');
+          this.benzaraService.PresentToast(resp['message'], 'danger');
           this.trackingordr.controls['tracking'].enable();
           setTimeout(() => {
             this.tracking.setFocus();
@@ -220,11 +223,13 @@ export class TrackingPage implements OnInit {
           this.enableSave = false;
           console.log('checkstatus');
         }
-        this.gatherService.dismiss();
+        this.benzaraService.dismiss();
       }, err=>{
-        this.gatherService.dismiss();
+        this.benzaraService.dismiss();
+      }).catch(err=>{
+        this.benzaraService.dismiss();
       })
-      this.gatherService.dismiss();
+     
     }
   }
 
@@ -249,7 +254,7 @@ export class TrackingPage implements OnInit {
         else if (this.scanItemList[idx]['isscanneditemslist'] > this.scanItemList[idx]['itemQuantity']) {
           // this.Vanityartservice.PresentToast('All items are scanned in' + this.scanItemList[idx]['itemName'] + '', 'danger');
           // this.Vanityartservice.PresentToast(this.Vanityartservice.errorMessages[5], 'danger');
-          this.gatherService.PresentToast(this.message[6], 'danger');
+          this.benzaraService.PresentToast(this.message[6], 'danger');
           this.scanItemList[idx]['isscanneditemslist'] = this.scanItemList[idx]['isscanneditemslist'] - 1;
         }
         temp = true;
@@ -258,7 +263,7 @@ export class TrackingPage implements OnInit {
     if (!temp) {
       // this.Vanityartservice.PresentToast('Invalid item code', 'danger');
       // this.Vanityartservice.PresentToast(this.Vanityartservice.errorMessages[4], 'danger');
-      this.gatherService.PresentToast(this.message[4], 'danger');
+      this.benzaraService.PresentToast(this.message[4], 'danger');
       this.trackingordr.controls['itemvalues'].reset();
     }
     if (this.autoSave) {
@@ -296,51 +301,42 @@ export class TrackingPage implements OnInit {
   //method for trackingsubmit
 
   trackingsubmit() {
-    this.gatherService.present();
+    this.benzaraService.present();
     this.itemslist = this.scanItemList;
-    var saveTracking = this.gatherService.baseUrl + this.gatherService.savetrckingitems;
+    var saveTracking = this.benzaraService.baseUrl + this.benzaraService.savetrckingitems;
     console.log(this.itemslist);
     this.d = new Date();
     this.n = this.d.toJSON();
     console.log(this.respData);
     let jsonobj: any = {
-      //"TrackingNumber": this.respData.trackingNumber,
       "TrackingNumber": this.trackingProNumber,
-      // "trackingNumber": this.trackingordr.controls.trackingNumber.value,
       "order": this.respData.order,
-      // "customerName": this.respData.customerName,
-      // "orderDateString": this.respData.orderDateString,
-      // "shipDateString": this.respData.shipDateString,
-      // "carrier": this.respData.carrier,
-      // "orderStatus": this.respData.orderStatus,
-      // "shippingMethod": this.respData.shippingMethod,
-      // "pro": this.trackingordr.value.pro,
        "Modified": this.userId,
-      // "scanItemList": this.scanItemList,
-      // "scanDate": this.n,
-      // "isScanned": this.respData.isScanned = true,
-      // "status": this.respData.status
     }
     console.log("respdataa", jsonobj)
-    this.gatherService.ajaxCallService(saveTracking, "post", jsonobj).then(result => {
-      console.log("resluu", result);
+    this.benzaraService.ajaxCallService(saveTracking, "post", jsonobj).then(result => {
+      this.allowSearch = true
       if (result['message'] == "Success") {
         console.log("haii", result)
-        this.gatherService.PresentToast('Tracking  completed & ' + result['message'], "success");
+        this.benzaraService.PresentToast('Tracking  completed & ' + result['message'], "success");
         this.eventLog = 'Tracking# ' + this.trackingProNumber + ' scan and save completed. \u2714' + '\n' + this.eventLog;
         this.formClear();
         setTimeout(() => {
           this.tracking.setFocus();
         }, 400);
       } else if (result['status'] == "Fail") {
-        this.gatherService.PresentToast('Tracking # ' + result['message'], "danger");
+        this.benzaraService.PresentToast('Tracking # ' + result['message'], "danger");
         this.formClear();
       }
-      this.gatherService.dismiss();
+      this.benzaraService.dismiss();
     }, err=> {
-      this.gatherService.dismiss();
+      this.allowSearch = true
+      this.benzaraService.dismiss();
+    }).catch(err=>{
+      this.allowSearch = true
+      this.benzaraService.dismiss();
     })
-    this.gatherService.dismiss();
+    
   }
 
 
@@ -403,11 +399,11 @@ export class TrackingPage implements OnInit {
               "trackingNumber": track.toUpperCase()
             }
             console.log(jsonobj);
-            let url = this.gatherService.baseUrl + this.gatherService.readyToShipped;
-            this.gatherService.ajaxCallService(url, "post", jsonobj).then(result => {
+            let url = this.benzaraService.baseUrl + this.benzaraService.readyToShipped;
+            this.benzaraService.ajaxCallService(url, "post", jsonobj).then(result => {
               console.log(result);
               if (result['status'] == 'Success') {
-                this.gatherService.PresentToast(result['message'], 'success');
+                this.benzaraService.PresentToast(result['message'], 'success');
                 this.enterEvt = false;
                 this.enterEvt = false;
                 //this.scanItemList = result['scanItemList'];
@@ -428,7 +424,7 @@ export class TrackingPage implements OnInit {
                 //   this.trackingsubmit();
                 // }
               } else {
-                this.gatherService.PresentToast(result['message'], 'danger');
+                this.benzaraService.PresentToast(result['message'], 'danger');
                 this.eventLog = result['message'] + '\n' + this.eventLog;
                 this.formClear();
               }

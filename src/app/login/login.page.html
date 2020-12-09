@@ -2,10 +2,8 @@
   <div>
     <img src="../../assets/images/homebg.png" class="class-headerimg">
   </div>
-    
   <br><br>
   <ion-grid>
-  
       <ion-item>
         <ion-label position="floating" class="lab-font">
             User Id
@@ -24,10 +22,8 @@
              required ></ion-input>
         </ion-item>
         <div class="error-message" *ngIf="errPassword">{{message[1]}}</div><br>
-   
   </ion-grid>
   <br>
-
   <ion-row class="ion-align-items-center ion-justify-content-center">
     <ion-col>
       <ion-button type="submit" size="medium" expand="block" class="loggbtn" (click)="btnLogin()" color="medium">LOGIN</ion-button>
@@ -35,46 +31,5 @@
   </ion-row>
 </ion-content>
 <ion-footer no-border *ngIf="isKeyboardHide">
-  
-  <p style="font-size: 14px;text-align: center;color: gray;">Version: UAT (1.0.0) 07-14-2020</p>
+  <p style="font-size: 14px;text-align: center;color: gray;">Version: UAT (1.0.0) 12-04-2020</p>
 </ion-footer>
-<!-- <ion-header class="class-headerimg">
-</ion-header>
-<ion-content hide-tabs>
-      <ion-grid>
-        <br>
-        <ion-card>
-          <ion-card-content>
-            <ion-item>
-              <ion-label position="floating" class="lab-font">
-                  User Id
-              </ion-label>
-              <ion-input  type="email"  style="color: black;" class="lab-font" [(ngModel)]="userEmail"
-                (ionInput)="checkEmptyIdOnFocus($event)" (ionBlur)="checkEmptyIdOnBlur($event)"  (keyup.enter)="btnLogin()" required>
-              </ion-input>
-              </ion-item>
-              <div class="error-message" *ngIf="errUserName">{{message[0]}}</div><br>
-              <ion-item>
-                <ion-label position="floating" class="lab-font">
-                  Password
-                </ion-label>
-                <ion-input  type="Password" [(ngModel)]="userPwd" style="color: black;" (keyup.enter)="btnLogin()" class="lab-font"
-                   required ></ion-input>
-              </ion-item>
-              <div class="error-message" *ngIf="errPassword">{{message[1]}}</div>
-              <br><br>
-              <ion-row class="ion-align-items-center ion-justify-content-center">
-                
-                <ion-col>
-                  <ion-button type="submit" size="medium" expand="block" class="loggbtn" (click)="btnLogin()" color="medium">LOGIN</ion-button>
-                </ion-col>
-               
-              </ion-row>
-          </ion-card-content>
-        </ion-card>
-      </ion-grid>
-</ion-content>
-<ion-footer no-border *ngIf="isKeyboardHide">
-  
-  <p style="font-size: 14px;text-align: center;">Version: PROD (0.0.1) 22-04-2020</p>
-</ion-footer> -->

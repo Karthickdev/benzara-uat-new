@@ -18,7 +18,7 @@ export class AppComponent {
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
-    private rayneService: AuthService
+    private benzaraService: AuthService
   ) {
     this.initializeApp();
     this.getErrorMessages();
@@ -34,35 +34,37 @@ export class AppComponent {
   }
 
   getErrorMessages() {
-    let url = this.rayneService.baseUrl + this.rayneService.errorMsg;
-    let mode = this.rayneService.baseUrl.includes("https") ? "PROD" : "UAT";
-    this.rayneService.ajaxCallService(url, "post", '').then(resp => {
+    let url = this.benzaraService.baseUrl + this.benzaraService.errorMsg;
+    let mode = this.benzaraService.baseUrl.includes("https") ? "PROD" : "UAT";
+    this.benzaraService.ajaxCallService(url, "post", '').then(resp => {
       console.log(resp);
-      this.rayneService.errorMessages = resp['messages'];
+      this.benzaraService.errorMessages = resp['messages'];
       localStorage.setItem("Message", JSON.stringify(resp['messages']));
      if (mode == "UAT") {
       this.appVersion = resp['appVersionUAT']
-      localStorage.setItem("version", this.appVersion)
+      
       if(this.version == "" || this.version == undefined){
+        localStorage.setItem("version", this.appVersion)
         this.version = this.appVersion
       }
       if (resp['appVersionUAT'] != this.version) {
-          this.rayneService.presentAlert();
-          this.rayneService.versionChecked = false;
+          this.benzaraService.presentAlert();
+          this.benzaraService.versionChecked = false;
         } else {
-          this.rayneService.versionChecked = true;
+          this.benzaraService.versionChecked = true;
         }
       } else {
         this.appVersion = resp['appVersionUAT']
-        localStorage.setItem("version", this.appVersion)
+        
         if(this.version == "" || this.version == undefined){
+          localStorage.setItem("version", this.appVersion)
           this.version = this.appVersion
         }
         if (resp['appVersionPRD'] != this.version) {
-          this.rayneService.presentAlert();
-          this.rayneService.versionChecked = false;
+          this.benzaraService.presentAlert();
+          this.benzaraService.versionChecked = false;
         } else {
-          this.rayneService.versionChecked = true;
+          this.benzaraService.versionChecked = true;
         }
       }
     })

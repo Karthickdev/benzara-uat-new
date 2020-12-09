@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ToastController, LoadingController, AlertController } from '@ionic/angular';
-import { HTTP } from '@ionic-native/http/ngx';
+import { Printer, PrintOptions } from '@ionic-native/printer/ngx';
+import { File } from '@ionic-native/file/ngx';
+import { FileOpener } from '@ionic-native/file-opener/ngx';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  //baseUrl: string = 'http://71.252.180.148/opal/uat/OpalBaseV2/scanAppApi/'
    baseUrl: string = 'http://71.252.180.148/opal/uat/Benzara/scanAppApi/'; //UAT
    //baseUrl: string = 'http://71.252.180.148/opal/uat/vanityart/';
    //baseUrl: string = 'https://www2.order-fulfillment.bz/benzara/scanAppApi/'; //PROD
@@ -28,11 +31,18 @@ export class AuthService {
 	readyToShipped: string = "UpdateToReadyToShipped";
 	errorMessages: any;
   versionChecked: boolean;
+  printLabels: string = "GetPurchaseOrderPrintLabels";
+
+  generateLabel: string = "PurchaseOrderPrintLabels";
   
   constructor(public http: HttpClient,
     public toastController: ToastController,
     public loadingCtrl: LoadingController,
-    public alert: AlertController) { }
+    public alert: AlertController,
+    private printer: Printer,
+    private alertCtrl: AlertController,
+    private file: File,
+    private opener:FileOpener) { }
 
   async PresentToast(msg, color) {
     const toast = await this.toastController.create({
@@ -104,6 +114,90 @@ export class AuthService {
     }
   }
 
+  getLabel(dataUrl, dataType, dataParam){
+    let headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Methods', 'POST, GET ,OPTIONS');
+    // headers.append('Access-Control-Allow-Headers', 'application/octet-stream');
+     headers.append('Content-Type', 'application/x-www-form-urlencoded');
+   // headers.append('responseType', 'arraybuffer');
+    switch (dataType) {
+    case 'post': return new Promise(resolve => {	//post return type
+      // this.presentLoading();
+
+      this.http.post(dataUrl, dataParam, { headers: headers })
+        .subscribe((data) => {
+          this.ajaxData = data
+          this.saveAndOpenPdf(this.ajaxData.fileContents, this.ajaxData.fileDownloadName)
+          resolve(this.ajaxData);
+        }, (err) => {
+          if (err) {
+            this.PresentToast('Unable to reach server, Please try again', 'danger');
+            console.log(err);
+          } else {
+            this.PresentToast('Unable to reach server, Please try again', 'danger');
+          }
+        });
+    });
+  }
+}
+
+saveAndOpenPdf(pdf: string, filename: string) {
+  const writeDirectory = this.file.externalDataDirectory
+  this.file.writeFile(writeDirectory, filename+'.pdf', this.convertBase64ToBlob(pdf, 'application/pdf'), {replace: true})
+    .then(() => {
+      // this.opener.open(writeDirectory + filename, 'application/pdf')
+       
+          this.printer.isAvailable().then((onSuccess)=>{
+            let options: PrintOptions = {
+            name: filename+'.pdf',
+            duplex: true,
+            orientation: 'portrait',
+            monochrome: true
+            }
+          this.printer.print(writeDirectory + filename+'.pdf', options).then(onSuccess=>{
+            console.log(onSuccess);
+          }).catch(err=>{
+            this.showAlert(err+' printErr');
+          })
+          }).catch((err)=>{
+              this.showAlert(err);
+          })
+
+      })
+      .catch(() => {
+        console.error('Error writing pdf file');
+    });
+}
+
+async showAlert(err){
+  let alert = await this.alertCtrl.create({
+    message: err
+  });
+  alert.present();
+}
+
+convertBase64ToBlob(b64Data, contentType): Blob {
+  contentType = contentType || '';
+  const sliceSize = 512;
+  b64Data = b64Data.replace(/^[^,]+,/, '');
+  b64Data = b64Data.replace(/\s/g, '');
+  const byteCharacters = window.atob(b64Data);
+  const byteArrays = [];
+  for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+       const slice = byteCharacters.slice(offset, offset + sliceSize);
+       const byteNumbers = new Array(slice.length);
+       for (let i = 0; i < slice.length; i++) {
+           byteNumbers[i] = slice.charCodeAt(i);
+       }
+       const byteArray = new Uint8Array(byteNumbers);
+       byteArrays.push(byteArray);
+  }
+ return new Blob(byteArrays, {type: contentType});
+}
+
+ 
+
+
   //Method to present alert fro App update
   async presentAlert() {
 		const alert = await this.alert.create({
@@ -114,8 +208,7 @@ export class AuthService {
           text: 'Done',
           role: 'cancel',
           cssClass: 'secondary',
-          handler: (blah) => {
-            console.log('Confirm Cancel: blah', blah);
+          handler: () => {
             navigator['app'].exitApp();
           }
         }

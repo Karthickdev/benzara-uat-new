@@ -40,7 +40,7 @@ export class ReportsipPage implements OnInit {
   constructor(
     private formbuilder: FormBuilder,
     private routeto: Router,
-    private Vanityartservice: AuthService,
+    private benzaraService: AuthService,
     private keyboard: Keyboard,
     public platform: Platform
     // private datePicker: DatePicker,
@@ -128,9 +128,10 @@ export class ReportsipPage implements OnInit {
     this.starttime = stime.split(" ")[0];
     this.startdate = this.reportpage.value.ordercreatedfrom;
     this.enddate = this.reportpage.value.ordercreatedto;
+    console.log(this.starttime);
+    console.log(this.enddate);
 
-
-    var repporting = this.Vanityartservice.baseUrl + this.Vanityartservice.getReport;
+    var repporting = this.benzaraService.baseUrl + this.benzaraService.getReport;
     let dataParam = {
       "Order": this.reportpage.value.reportorder,
       "StatusEnum": this.reportpage.value.status,
@@ -141,9 +142,9 @@ export class ReportsipPage implements OnInit {
     };
     console.log("resports", dataParam)
 
-    this.Vanityartservice.present();
-    this.Vanityartservice.ajaxCallService(repporting, "post", dataParam).then(resp => {
-      this.Vanityartservice.dismiss();
+    this.benzaraService.present();
+    this.benzaraService.ajaxCallService(repporting, "post", dataParam).then(resp => {
+      this.benzaraService.dismiss();
       if (Array.isArray(resp)) {
         this.reportresults = resp;
         // console.log("isArray");
@@ -159,13 +160,13 @@ export class ReportsipPage implements OnInit {
         // console.log("isNotArray");
         // if (resp['message'] == 'No data found for the given search critiera.') {
         //   this.reportresults = [];
-        //   this.Vanityartservice.PresentToast(resp['message'], "danger");
+        //   this.benzaraService.PresentToast(resp['message'], "danger");
         // } else if (resp['status'] == 'Success') {
-        //   this.Vanityartservice.PresentToast(resp['message'], "danger");
+        //   this.benzaraService.PresentToast(resp['message'], "danger");
 
         // }
         this.reportresults = [];
-        this.Vanityartservice.PresentToast(resp['message'], "danger");
+        this.benzaraService.PresentToast(resp['message'], "danger");
       }
 
     })
@@ -173,7 +174,7 @@ export class ReportsipPage implements OnInit {
 
   reportssubmit() {
 
-    var exportrepporting = this.Vanityartservice.baseUrl + this.Vanityartservice.exportreports;
+    var exportrepporting = this.benzaraService.baseUrl + this.benzaraService.exportreports;
     let dataParam = {
       "Order": this.reportpage.value.reportorder,
       "StatusEnum": this.reportpage.value.status,
@@ -184,23 +185,23 @@ export class ReportsipPage implements OnInit {
       "OrderCreatedToDate": this.enddate
     };
     console.log(dataParam)
-    this.Vanityartservice.present();
-    this.Vanityartservice.ajaxCallService(exportrepporting, "post", dataParam).then(resp => {
+    this.benzaraService.present();
+    this.benzaraService.ajaxCallService(exportrepporting, "post", dataParam).then(resp => {
       this.respData = resp;
       console.log("res", this.respData);
       if (resp['status'] = "Success") {
-        this.Vanityartservice.PresentToast(resp['message'], "success");
+        this.benzaraService.PresentToast(resp['message'], "success");
 
       }
-      this.Vanityartservice.dismiss();
+      this.benzaraService.dismiss();
     })
   }
 
   //Method to get order status lists
   getOrderStatusList() {
-    let url = this.Vanityartservice.baseUrl + this.Vanityartservice.orderList;
-    this.Vanityartservice.present();
-    this.Vanityartservice.ajaxCallService(url, "post", '').then(resp => {
+    let url = this.benzaraService.baseUrl + this.benzaraService.orderList;
+    this.benzaraService.present();
+    this.benzaraService.ajaxCallService(url, "post", '').then(resp => {
       this.respData = resp;
       console.log("res", this.respData);
       this.orderStatus = resp;
@@ -215,7 +216,7 @@ export class ReportsipPage implements OnInit {
       this.orderStatus.push({ enumName: 'Ready to Ship', enumValue: '50', selected: false });
       this.orderStatus.push({ enumName: 'Shipped', enumValue: '80', selected: false });
       console.log(this.orderStatus);
-      this.Vanityartservice.dismiss();
+      this.benzaraService.dismiss();
     })
   }
 
@@ -241,8 +242,8 @@ export class ReportsipPage implements OnInit {
 
   getWarehouseList() {
 
-    let url = this.Vanityartservice.baseUrl + this.Vanityartservice.warehouseList;
-    this.Vanityartservice.ajaxCallService(url, "post", '').then(resp => {
+    let url = this.benzaraService.baseUrl + this.benzaraService.warehouseList;
+    this.benzaraService.ajaxCallService(url, "post", '').then(resp => {
       this.warehouselist = resp;
       console.log(resp);
       this.warehouseval = resp[0]['warehouseCode'];
