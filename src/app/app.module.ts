@@ -14,6 +14,7 @@ import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { Printer, PrintOptions } from '@ionic-native/printer/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
+import { NetworkInterface } from '@ionic-native/network-interface/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -27,6 +28,7 @@ import { FileOpener } from '@ionic-native/file-opener/ngx';
     Printer,
     File,
     FileOpener,
+    NetworkInterface,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

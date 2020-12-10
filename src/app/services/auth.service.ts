@@ -32,6 +32,7 @@ export class AuthService {
 	errorMessages: any;
   versionChecked: boolean;
   printLabels: string = "GetPurchaseOrderPrintLabels";
+  network:any;
 
   generateLabel: string = "PurchaseOrderPrintLabels";
   
@@ -147,21 +148,22 @@ saveAndOpenPdf(pdf: string, filename: string) {
     .then(() => {
       // this.opener.open(writeDirectory + filename, 'application/pdf')
        
-          this.printer.isAvailable().then((onSuccess)=>{
-            let options: PrintOptions = {
-            name: filename+'.pdf',
-            duplex: true,
-            orientation: 'portrait',
-            monochrome: true
-            }
-          this.printer.print(writeDirectory + filename+'.pdf', options).then(onSuccess=>{
+          // this.printer.isAvailable().then((onSuccess)=>{
+          //   let options: PrintOptions = {
+          //   name: filename+'.pdf',
+          //   duplex: true,
+          //   orientation: 'portrait',
+          //   monochrome: true
+          //   }
+
+          this.printer.print(writeDirectory + filename+'.pdf', {name: filename+'.pdf', orientation: 'portrait', printer: 'ipp://'+this.network}).then(onSuccess=>{
             console.log(onSuccess);
           }).catch(err=>{
             this.showAlert(err+' printErr');
           })
-          }).catch((err)=>{
-              this.showAlert(err);
-          })
+          // }).catch((err)=>{
+          //     this.showAlert(err);
+          // })
 
       })
       .catch(() => {

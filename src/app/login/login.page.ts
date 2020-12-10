@@ -2,9 +2,9 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Validators, FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
-import { Platform } from '@ionic/angular';
+import { Platform, AlertController } from '@ionic/angular';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
-
+import { NetworkInterface } from '@ionic-native/network-interface/ngx';
 
 @Component({
   selector: 'app-login',
@@ -24,12 +24,15 @@ export class LoginPage implements OnInit {
   userEmail:any;
   userPwd:any;
   version:any;
+  network:any;
   constructor(
     private formBuilder: FormBuilder,
     private routeTo: Router,
     private benzaraService: AuthService,
     public platform: Platform,
-    private keyboard: Keyboard
+    private keyboard: Keyboard,
+    private alertCtrl: AlertController,
+    private networkInterface: NetworkInterface
   ) {
     this.logingrp = this.formBuilder.group({
      // userEmail: [''],
@@ -63,6 +66,19 @@ export class LoginPage implements OnInit {
     this.userPwd = "";
     this.logingrp.reset();
   }
+
+  ionViewDidEnter(){
+    this.networkInterface.getWiFiIPAddress().then(address=>{
+        this.benzaraService.network = address.ip
+    })
+  }
+
+  // async testAlert(msg){
+  //   let alert = await this.alertCtrl.create({
+  //     message: msg,
+  //   });
+  //   alert.present();
+  // }
 
 
 
