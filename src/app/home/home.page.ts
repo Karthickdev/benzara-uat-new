@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { Printer, PrintOptions } from '@ionic-native/printer/ngx';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-home',
@@ -12,7 +14,9 @@ export class HomePage implements OnInit {
   version:any;
   constructor(
     private routeto: Router,
-    private benzaraService: AuthService
+    private benzaraService: AuthService,
+    private printer: Printer,
+    private alertCtrl: AlertController
   ) {
     this.version = localStorage.getItem('version');
   }

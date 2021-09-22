@@ -65,3 +65,11 @@ body.keyboard-open .has-footer{
 .logBtn{
     --background: var(--ion-color-log-btn);
 }
+ion-item{
+	--padding-start: 15px;
+	--padding-end: 15px;
+  }
+
+.loggbtn{
+    padding: 0px 15px 0px 15px;
+}

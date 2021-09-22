@@ -9,11 +9,10 @@ import { FileOpener } from '@ionic-native/file-opener/ngx';
   providedIn: 'root'
 })
 export class AuthService {
-  //baseUrl: string = 'http://71.252.180.148/opal/uat/OpalBaseV2/scanAppApi/'
-   //baseUrl: string = 'http://71.252.180.148/opal/uat/Benzara/scanAppApi/'; //UAT
-   //baseUrl: string = 'http://71.252.180.148/opal/uat/vanityart/';
-   baseUrl: string = 'https://www2.order-fulfillment.bz/benzara/scanAppApi/'; //PROD
-  //baseUrl: string = 'https://www2.order-fulfillment.bz/GatherCraft/scanAppApi/'; //NEW PROD
+  
+   baseUrl: string = 'http://67.79.237.242/opal/uat/Benzara/scanAppApi/'; //UAT
+   //baseUrl: string = 'https://www2.order-fulfillment.bz/benzara/scanAppApi/'; //PROD
+
 	//Login
 	userLogin: string = "UserLogin";
 	getscanitems: string = "BOLScanDetails";
@@ -33,6 +32,8 @@ export class AuthService {
   versionChecked: boolean;
   printLabels: string = "GetPurchaseOrderPrintLabels";
   network:any;
+  printerIP:any;
+  defaultPrinterIP:any;
 
   generateLabel: string = "PurchaseOrderPrintLabels";
   
@@ -43,7 +44,7 @@ export class AuthService {
     private printer: Printer,
     private alertCtrl: AlertController,
     private file: File,
-    private opener:FileOpener) { }
+    private fileOpener: FileOpener) { }
 
   async PresentToast(msg, color) {
     const toast = await this.toastController.create({
@@ -135,6 +136,7 @@ export class AuthService {
             this.PresentToast('Unable to reach server, Please try again', 'danger');
             console.log(err);
           } else {
+            console.log(err);
             this.PresentToast('Unable to reach server, Please try again', 'danger');
           }
         });
@@ -143,32 +145,14 @@ export class AuthService {
 }
 
 saveAndOpenPdf(pdf: string, filename: string) {
-  const writeDirectory = this.file.externalDataDirectory
+  const writeDirectory = this.file.dataDirectory
   this.file.writeFile(writeDirectory, filename+'.pdf', this.convertBase64ToBlob(pdf, 'application/pdf'), {replace: true})
     .then(() => {
-      // this.opener.open(writeDirectory + filename, 'application/pdf')
-       
-          // this.printer.isAvailable().then((onSuccess)=>{
-          //   let options: PrintOptions = {
-          //   name: filename+'.pdf',
-          //   duplex: true,
-          //   orientation: 'portrait',
-          //   monochrome: true
-          //   }
-
-          this.printer.print(writeDirectory + filename+'.pdf', {name: filename+'.pdf', orientation: 'portrait', printer: 'ipp://'+this.network}).then(onSuccess=>{
-            console.log(onSuccess);
-          }).catch(err=>{
-            this.showAlert(err+' printErr');
-          })
-          // }).catch((err)=>{
-          //     this.showAlert(err);
-          // })
-
-      })
-      .catch(() => {
-        console.error('Error writing pdf file');
-    });
+      this.fileOpener.open(writeDirectory + filename+'.pdf', 'application/pdf').then(()=>{})
+    })
+    .catch(() => {
+      console.error('Error writing pdf file');
+});
 }
 
 async showAlert(err){

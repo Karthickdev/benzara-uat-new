@@ -12,9 +12,9 @@ import { AuthService } from './services/auth.service';
   styleUrls: ['app.component.scss']
 })
 export class AppComponent {
-   
-   version: any; //PROD & UAT
-   appVersion:any;
+   version: string = '1.0.2' //UAT
+   //version: string = '0.0.3'; //PROD
+   appVersion:any; //appversionlatestttt12
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
@@ -23,7 +23,6 @@ export class AppComponent {
   ) {
     this.initializeApp();
     this.getErrorMessages();
-    this.version = localStorage.getItem("version");
   }
 
   initializeApp() {
@@ -38,29 +37,17 @@ export class AppComponent {
     let url = this.benzaraService.baseUrl + this.benzaraService.errorMsg;
     let mode = this.benzaraService.baseUrl.includes("https") ? "PROD" : "UAT";
     this.benzaraService.ajaxCallService(url, "post", '').then(resp => {
-      console.log(resp);
+      console.log(resp['appVersionUAT']);
       this.benzaraService.errorMessages = resp['messages'];
       localStorage.setItem("Message", JSON.stringify(resp['messages']));
      if (mode == "UAT") {
-      this.appVersion = resp['appVersionUAT']
-      
-      if(this.version == "" || this.version == undefined){
-        localStorage.setItem("version", this.appVersion)
-        this.version = this.appVersion
-      }
-      if (resp['appVersionUAT'] != this.version) {
+        if (resp['appVersionUAT'] != this.version) {
           this.benzaraService.presentAlert();
           this.benzaraService.versionChecked = false;
         } else {
           this.benzaraService.versionChecked = true;
         }
       } else {
-        this.appVersion = resp['appVersionUAT']
-        
-        if(this.version == "" || this.version == undefined){
-          localStorage.setItem("version", this.appVersion)
-          this.version = this.appVersion
-        }
         if (resp['appVersionPRD'] != this.version) {
           this.benzaraService.presentAlert();
           this.benzaraService.versionChecked = false;

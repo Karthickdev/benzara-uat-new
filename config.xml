@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.caftius.benzara" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.caftius.benzara" version="0.0.3" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>OPAL-Benzara</name>
-    <description>Scanning App</description>
-    <author email="karthick@caftius.com" href="http://caftius.com">Caftius Team</author>
+    <description>OPAL goes to market.</description>
+    <author email="karthick@caftius.com" href="http://caftius.com">Cityon Team</author>
     <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />

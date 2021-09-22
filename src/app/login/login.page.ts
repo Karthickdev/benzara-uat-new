@@ -25,6 +25,7 @@ export class LoginPage implements OnInit {
   userPwd:any;
   version:any;
   network:any;
+  
   constructor(
     private formBuilder: FormBuilder,
     private routeTo: Router,
@@ -67,24 +68,9 @@ export class LoginPage implements OnInit {
     this.logingrp.reset();
   }
 
-  ionViewDidEnter(){
-    this.networkInterface.getWiFiIPAddress().then(address=>{
-        this.benzaraService.network = address.ip
-    })
-  }
-
-  // async testAlert(msg){
-  //   let alert = await this.alertCtrl.create({
-  //     message: msg,
-  //   });
-  //   alert.present();
-  // }
-
-
-
   btnLogin() {
+    if(this.benzaraService.versionChecked == true){
     var loginUrl = this.benzaraService.baseUrl + this.benzaraService.userLogin;
-    console.log(loginUrl);
     if (this.userEmail == undefined || this.userEmail == "") {
       this.errUserName = true;
       return false;
@@ -120,6 +106,10 @@ export class LoginPage implements OnInit {
         this.benzaraService.PresentToast('Unable to reach server, Please try again', 'danger');
         this.benzaraService.dismiss();
       });
+    }else{
+      this.benzaraService.presentAlert();
+    }
+    
   }
 
   //check if model is empty

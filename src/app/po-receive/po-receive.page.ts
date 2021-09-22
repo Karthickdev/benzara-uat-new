@@ -20,6 +20,7 @@ export class PoReceivePage implements OnInit {
   itemQty:any;
   purchaseOrderId:any;
   isKeyboardHide = true;
+  modifiedPoItems:any[]=[];
   @ViewChild('po', { static: false }) po;
 
   constructor(
@@ -72,6 +73,9 @@ export class PoReceivePage implements OnInit {
     this.poScanning.reset();
     this.poItems='';
     this.eventLog='';
+    setTimeout(()=>{
+      this.po.setFocus();
+    }, 100);
   }
 
   scanner(event){
@@ -100,7 +104,7 @@ export class PoReceivePage implements OnInit {
       let poDetails = this.resData.purchaseOrder
       this.purchaseOrderId = poDetails.purchaseOrderId
       if(this.resData.status == "success" && poDetails.isLabelPrinted == false){
-        this.eventLog = 'PO # is successfully scanned'+'\n'+this.eventLog
+        this.eventLog = 'PO #'+po+' is successfully scanned'+'\n'+this.eventLog
         this.poItems = poDetails.items
       }else if(this.resData.status == "failure"){
         this.eventLog = this.resData.responseMessage+'\n'+this.eventLog
@@ -120,6 +124,11 @@ export class PoReceivePage implements OnInit {
   generateLabel(){
     for(let item of this.poItems){
       item.quantity = item.extraQuantityReceived
+      let data = {
+        "itemId": item.itemId,
+        "quantity": item.quantity
+      }
+      this.modifiedPoItems.push(data);
     }
     setTimeout(()=>{
      this.sendDataToGenerateLabel()
@@ -131,7 +140,7 @@ export class PoReceivePage implements OnInit {
     let data ={
       "purchaseOrder":{
         "purchaseOrderId": this.purchaseOrderId,
-        "items": this.poItems
+        "items": this.modifiedPoItems.filter(item => item.quantity > 0)
       }
     }
     let loading = await this.loadingCtrl.create({
